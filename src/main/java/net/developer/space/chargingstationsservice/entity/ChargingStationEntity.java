@@ -29,6 +29,8 @@ import net.developer.space.chargingstationsservice.entity.enums.Status;
 @Table(name = "charging_station")
 public class ChargingStationEntity {
     @Id
+    @Getter
+    @Setter
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
