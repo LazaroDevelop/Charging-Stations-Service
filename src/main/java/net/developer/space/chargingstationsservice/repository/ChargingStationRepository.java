@@ -12,6 +12,6 @@ import net.developer.space.chargingstationsservice.entity.Location;
 @Repository
 public interface ChargingStationRepository extends JpaRepository<ChargingStationEntity, String> {
     List<ChargingStationEntity> findAll();
-    List<ChargingStationEntity> findByLocation(Location location);
+    ChargingStationEntity findByLocation(Location location);
     Optional<ChargingStationEntity> findById(String id);
 }
