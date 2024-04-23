@@ -1,4 +1,4 @@
-package net.developer.space.chargingstationsservice;
+package net.developer.space.chargingstationsservice.controller;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
