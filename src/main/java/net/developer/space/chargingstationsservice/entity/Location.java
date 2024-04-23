@@ -23,6 +23,8 @@ import lombok.ToString;
 @Table(name = "location")
 public class Location {
     @Id
+    @Setter
+    @Getter
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
