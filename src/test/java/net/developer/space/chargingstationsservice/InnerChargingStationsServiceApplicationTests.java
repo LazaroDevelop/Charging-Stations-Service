@@ -14,11 +14,17 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Import;
 
+import net.developer.space.chargingstationsservice.config.CacheConfig;
 import net.developer.space.chargingstationsservice.dto.ChargingStationDto;
 import net.developer.space.chargingstationsservice.entity.ChargingStationEntity;
 import net.developer.space.chargingstationsservice.entity.Location;
@@ -28,6 +34,7 @@ import net.developer.space.chargingstationsservice.repository.ChargingStationRep
 import net.developer.space.chargingstationsservice.service.ChargingStationService;
 
 @SpringBootTest
+@Import(CacheConfig.class)
 class ChargingStationsServiceApplicationTests {
 
 	@Mock
@@ -35,6 +42,9 @@ class ChargingStationsServiceApplicationTests {
 
 	@InjectMocks
 	ChargingStationService service;
+
+	@Autowired
+	private CacheManager cacheManager;
 
 	@BeforeEach
 	public void setUp(){
@@ -232,6 +242,21 @@ class ChargingStationsServiceApplicationTests {
 
 		assertEquals(Status.AVAILABLE, this.service.checkChargingStationStatus("entity_id1"));
 		assertNotEquals(Status.IN_USE, this.service.checkChargingStationStatus("entity_id1"));
+	}
+
+	@Test
+	void testRedisCache(){
+		String cacheName = "charging_station";
+		String key = "test_key";
+		String value = "test_value";
+
+		Cache cache = cacheManager.getCache(cacheName);
+
+		cache.put(key, value);
+	
+		String cachedValue = cache.get(key, String.class);
+
+		assertEquals(value, cachedValue);
 	}
 
 }
