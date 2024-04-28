@@ -32,6 +32,24 @@ public class ChargingStationController {
     @Autowired
     private IChargingStationService service;
 
+    @GetMapping("/all")
+    @ApiOperation(value = "Create and Save a new Charging Station item provided", response = ChargingStationDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully fetch all charging station"),
+            @ApiResponse(code = 204, message = "Empty result"),
+            @ApiResponse(code = 404, message = "Requested Resource not found")
+    })
+    public ResponseEntity<List<ChargingStationDto>> fetchAll(){
+        List<ChargingStationDto> chargingStationDtos = this.service.findAll();
+        if(chargingStationDtos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        if(chargingStationDtos == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(chargingStationDtos);
+    }
+
     @PostMapping("/create")
     @ApiOperation(value = "Create and Save a new Charging Station item provided", response = ChargingStationDto.class)
     @ApiResponses(value = {
