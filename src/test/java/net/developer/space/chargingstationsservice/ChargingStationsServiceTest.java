@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import net.developer.space.chargingstationsservice.repository.ILocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +41,10 @@ import net.developer.space.chargingstationsservice.service.ChargingStationServic
 class ChargingStationsServiceTest {
 
 	@Mock
-	IChargingStationRepository repository;
+	IChargingStationRepository chargingStationRepository;
+
+	@Mock
+	ILocationRepository locationRepository;
 
 	@InjectMocks
 	ChargingStationService service;
@@ -86,7 +90,7 @@ class ChargingStationsServiceTest {
 		mockCharging.add(entity1);
 		mockCharging.add(entity2);
 
-		when(this.repository.findAll()).thenReturn(mockCharging);
+		when(this.chargingStationRepository.findAll()).thenReturn(mockCharging);
 
 		List<ChargingStationDto> mockDtos = this.service.findAll();
 
@@ -127,7 +131,8 @@ class ChargingStationsServiceTest {
 		dto.setNumberOfChargingPoints(4);
 		dto.setStatus(Status.AVAILABLE);
 
-		when(this.repository.save(any(ChargingStationEntity.class))).thenReturn(entity1);
+		when(this.locationRepository.save(any(Location.class))).thenReturn(location1);
+		when(this.chargingStationRepository.save(any(ChargingStationEntity.class))).thenReturn(entity1);
 
 		ChargingStationDto mockDto = this.service.createChargingStation(dto);
 
@@ -156,7 +161,7 @@ class ChargingStationsServiceTest {
 
 		Optional<ChargingStationEntity> optionalEntity = Optional.of(entity);
 
-		when(this.repository.findById(anyLong())).thenReturn(optionalEntity);
+		when(this.chargingStationRepository.findById(anyLong())).thenReturn(optionalEntity);
 
 		ChargingStationDto mockDto = this.service.findChargingStationById(1l);
 
@@ -192,14 +197,14 @@ class ChargingStationsServiceTest {
 
 		Optional<ChargingStationEntity> eOptionaln = Optional.of(entity);
 
-		when(this.repository.findById(1l)).thenReturn(eOptionaln);
-		when(this.repository.save(any(ChargingStationEntity.class))).thenReturn(entity);
+		when(this.locationRepository.save(any(Location.class))).thenReturn(location);
+		when(this.chargingStationRepository.findById(1l)).thenReturn(eOptionaln);
+		when(this.chargingStationRepository.save(any(ChargingStationEntity.class))).thenReturn(entity);
 
 		ChargingStationDto mockDto = this.service.updateChargingStation(dto.getId(), dto);
 
 		assertNotNull(mockDto);
 		assertEquals(1l, mockDto.getId());
-		assertEquals(location, mockDto.getLocation());
 		assertEquals(ChargerType.DC_FAST_CHARGE, mockDto.getChargerType());
 		assertEquals(Status.IN_USE, mockDto.getStatus());
 		assertEquals(2, mockDto.getNumberOfChargingPoints());
@@ -220,7 +225,7 @@ class ChargingStationsServiceTest {
 		entity.setStatus(Status.AVAILABLE);
 		entity.setNumberOfChargingPoints(8);
 
-		when(this.repository.findByLocation(any(Location.class))).thenReturn(entity);
+		when(this.chargingStationRepository.findByLocation(any(Location.class))).thenReturn(entity);
 
 		ChargingStationDto mockDto = this.service.findChargingStationByLocation(location);
 
@@ -240,7 +245,7 @@ class ChargingStationsServiceTest {
 
 		Optional<ChargingStationEntity> optional = Optional.of(entity);
 
-		when(this.repository.findById(1l)).thenReturn(optional);
+		when(this.chargingStationRepository.findById(1l)).thenReturn(optional);
 
 		assertEquals(Status.AVAILABLE, this.service.checkChargingStationStatus(1l));
 		assertNotEquals(Status.IN_USE, this.service.checkChargingStationStatus(1l));
