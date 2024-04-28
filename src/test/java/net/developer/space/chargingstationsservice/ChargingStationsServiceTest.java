@@ -6,8 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,7 +32,7 @@ import net.developer.space.chargingstationsservice.entity.ChargingStationEntity;
 import net.developer.space.chargingstationsservice.entity.Location;
 import net.developer.space.chargingstationsservice.entity.enums.ChargerType;
 import net.developer.space.chargingstationsservice.entity.enums.Status;
-import net.developer.space.chargingstationsservice.repository.ChargingStationRepository;
+import net.developer.space.chargingstationsservice.repository.IChargingStationRepository;
 import net.developer.space.chargingstationsservice.service.ChargingStationService;
 
 @SpringBootTest
@@ -41,7 +40,7 @@ import net.developer.space.chargingstationsservice.service.ChargingStationServic
 class ChargingStationsServiceTest {
 
 	@Mock
-	ChargingStationRepository repository;
+	IChargingStationRepository repository;
 
 	@InjectMocks
 	ChargingStationService service;
@@ -58,26 +57,26 @@ class ChargingStationsServiceTest {
 	void testFindAllChargingStations() {
 
 		Location location1 = new Location();
-		location1.setId("id_location1");
+		location1.setId(new Long(12));
 		location1.setAddress("2nd Street #21");
 		location1.setLatitude(23.49502);
 		location1.setLongitude(45.39302);
 
 		ChargingStationEntity entity1 = new ChargingStationEntity();
-		entity1.setId("id1");
+		entity1.setId(new Long(1));
 		entity1.setLocation(location1);
 		entity1.setChargerType(ChargerType.AC);
 		entity1.setNumberOfChargingPoints(4);
 		entity1.setStatus(Status.AVAILABLE);
 
 		Location location2 = new Location();
-		location2.setId("id_location2");
+		location2.setId(new Long(13));
 		location2.setAddress("3rd Street #32");
 		location2.setLatitude(32.3234);
 		location2.setLongitude(21.23382);
 
 		ChargingStationEntity entity2 = new ChargingStationEntity();
-		entity2.setId("id2");
+		entity2.setId(new Long(2));
 		entity2.setLocation(location2);
 		entity2.setChargerType(ChargerType.DC_FAST_CHARGE);
 		entity2.setNumberOfChargingPoints(2);
@@ -93,13 +92,13 @@ class ChargingStationsServiceTest {
 
 		assertEquals(2, mockDtos.size());
 
-		assertEquals("id1", mockDtos.get(0).getId());
+		assertEquals(new Long(1), mockDtos.get(0).getId());
 		assertEquals(location1, mockDtos.get(0).getLocation());
 		assertEquals(ChargerType.AC, mockDtos.get(0).getChargerType());
 		assertEquals(4, mockDtos.get(0).getNumberOfChargingPoints());
 		assertEquals(Status.AVAILABLE, mockDtos.get(0).getStatus());
 
-		assertEquals("id2", mockDtos.get(1).getId());
+		assertEquals(new Long(2), mockDtos.get(1).getId());
 		assertEquals(location2, mockDtos.get(1).getLocation());
 		assertEquals(ChargerType.DC_FAST_CHARGE, mockDtos.get(1).getChargerType());
 		assertEquals(2, mockDtos.get(1).getNumberOfChargingPoints());
@@ -109,20 +108,20 @@ class ChargingStationsServiceTest {
 	@Test
 	void createNewChargingStation(){
 		Location location1 = new Location();
-		location1.setId("id_location1");
+		location1.setId(new Long(12));
 		location1.setAddress("2nd Street #21");
 		location1.setLatitude(23.49502);
 		location1.setLongitude(45.39302);
 
 		ChargingStationEntity entity1 = new ChargingStationEntity();
-		entity1.setId("id1");
+		entity1.setId(new Long(1));
 		entity1.setLocation(location1);
 		entity1.setChargerType(ChargerType.AC);
 		entity1.setNumberOfChargingPoints(4);
 		entity1.setStatus(Status.AVAILABLE);
 
 		ChargingStationDto dto = new ChargingStationDto();
-		dto.setId("id1");
+		dto.setId(new Long(2));
 		dto.setLocation(location1);
 		dto.setChargerType(ChargerType.AC);
 		dto.setNumberOfChargingPoints(4);
@@ -133,7 +132,7 @@ class ChargingStationsServiceTest {
 		ChargingStationDto mockDto = this.service.createChargingStation(dto);
 
 		assertNotNull(mockDto);
-		assertEquals("id1", mockDto.getId());
+		assertEquals(new Long(1), mockDto.getId());
 		assertEquals(location1, mockDto.getLocation());
 		assertEquals(ChargerType.AC, mockDto.getChargerType());
 		assertEquals(4, mockDto.getNumberOfChargingPoints());
@@ -143,13 +142,13 @@ class ChargingStationsServiceTest {
 	@Test
 	void findChargingStationById(){
 		Location location = new Location();
-		location.setId("id_location2");
+		location.setId(new Long(1));
 		location.setAddress("3rd Street #32");
 		location.setLatitude(32.3234);
 		location.setLongitude(21.23382);
 
 		ChargingStationEntity entity = new ChargingStationEntity();
-		entity.setId("id2");
+		entity.setId(1l);
 		entity.setLocation(location);
 		entity.setChargerType(ChargerType.DC_FAST_CHARGE);
 		entity.setNumberOfChargingPoints(2);
@@ -157,12 +156,12 @@ class ChargingStationsServiceTest {
 
 		Optional<ChargingStationEntity> optionalEntity = Optional.of(entity);
 
-		when(this.repository.findById(anyString())).thenReturn(optionalEntity);
+		when(this.repository.findById(anyLong())).thenReturn(optionalEntity);
 
-		ChargingStationDto mockDto = this.service.findChargingStationById("id2");
+		ChargingStationDto mockDto = this.service.findChargingStationById(1l);
 
 		assertNotNull(mockDto);
-		assertEquals("id2", mockDto.getId());
+		assertEquals(1l, mockDto.getId());
 		assertEquals(location, mockDto.getLocation());
 		assertEquals(ChargerType.DC_FAST_CHARGE, mockDto.getChargerType());
 		assertEquals(2, mockDto.getNumberOfChargingPoints());
@@ -172,20 +171,20 @@ class ChargingStationsServiceTest {
 	@Test
 	void updateChargingStation(){
 		Location location = new Location();
-		location.setId("id_location2");
+		location.setId(new Long(1));
 		location.setAddress("3rd Street #32");
 		location.setLatitude(32.3234);
 		location.setLongitude(21.23382);
 
 		ChargingStationEntity entity = new ChargingStationEntity();
-		entity.setId("id2");
+		entity.setId(1l);
 		entity.setLocation(location);
 		entity.setChargerType(ChargerType.DC_FAST_CHARGE);
 		entity.setNumberOfChargingPoints(2);
 		entity.setStatus(Status.IN_USE);
 
 		ChargingStationDto dto = new ChargingStationDto();
-		dto.setId("id2");
+		dto.setId(1l);
 		dto.setLocation(location);
 		dto.setChargerType(ChargerType.DC_FAST_CHARGE);
 		dto.setNumberOfChargingPoints(2);
@@ -193,13 +192,13 @@ class ChargingStationsServiceTest {
 
 		Optional<ChargingStationEntity> eOptionaln = Optional.of(entity);
 
-		when(this.repository.findById("id2")).thenReturn(eOptionaln);
+		when(this.repository.findById(1l)).thenReturn(eOptionaln);
 		when(this.repository.save(any(ChargingStationEntity.class))).thenReturn(entity);
 
 		ChargingStationDto mockDto = this.service.updateChargingStation(dto.getId(), dto);
 
 		assertNotNull(mockDto);
-		assertEquals("id2", mockDto.getId());
+		assertEquals(1l, mockDto.getId());
 		assertEquals(location, mockDto.getLocation());
 		assertEquals(ChargerType.DC_FAST_CHARGE, mockDto.getChargerType());
 		assertEquals(Status.IN_USE, mockDto.getStatus());
@@ -209,13 +208,13 @@ class ChargingStationsServiceTest {
 	@Test
 	void findChargingStationByLocation(){
 		Location location = new Location();
-		location.setId("location_id1");
+		location.setId(new Long(1));
 		location.setAddress("2nd Avenew #32 Founders Street");
 		location.setLatitude(23.4231);
 		location.setLongitude(56.3232);
 
 		ChargingStationEntity entity = new ChargingStationEntity();
-		entity.setId("entity_id1");
+		entity.setId(new Long(1));
 		entity.setLocation(location);
 		entity.setChargerType(ChargerType.DC_FAST_CHARGE);
 		entity.setStatus(Status.AVAILABLE);
@@ -226,7 +225,7 @@ class ChargingStationsServiceTest {
 		ChargingStationDto mockDto = this.service.findChargingStationByLocation(location);
 
 		assertNotNull(mockDto);
-		assertEquals("entity_id1", mockDto.getId());
+		assertEquals(new Long(1), mockDto.getId());
 		assertEquals(location, mockDto.getLocation());
 		assertEquals(8, mockDto.getNumberOfChargingPoints());
 		assertNotEquals(ChargerType.AC, mockDto.getChargerType());
@@ -236,15 +235,15 @@ class ChargingStationsServiceTest {
 	@Test
 	void checkChargingStationStatus(){
 		ChargingStationEntity entity = new ChargingStationEntity();
-		entity.setId("entity_id1");
+		entity.setId(1l);
 		entity.setStatus(Status.AVAILABLE);
 
 		Optional<ChargingStationEntity> optional = Optional.of(entity);
 
-		when(this.repository.findById("entity_id1")).thenReturn(optional);
+		when(this.repository.findById(1l)).thenReturn(optional);
 
-		assertEquals(Status.AVAILABLE, this.service.checkChargingStationStatus("entity_id1"));
-		assertNotEquals(Status.IN_USE, this.service.checkChargingStationStatus("entity_id1"));
+		assertEquals(Status.AVAILABLE, this.service.checkChargingStationStatus(1l));
+		assertNotEquals(Status.IN_USE, this.service.checkChargingStationStatus(1l));
 	}
 
 	@Test
