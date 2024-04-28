@@ -15,6 +15,10 @@ public class ChargingStationNotFoundException extends RuntimeException {
      * Custom-formatted message for type exceptions not found for localizations
      */
     public static final String LOCATION_EXCEPTION_MESSAGE = "Error, can't find any charging station with this location";
+    /**
+     * Custom-formatted message for type exceptions not found for localizations by id
+     */
+    public static final String LOCATION_NOT_FOUND_MESSAGE = "Error, location with id: %s, not found";
     public ChargingStationNotFoundException(String message){
         super(message);
     }

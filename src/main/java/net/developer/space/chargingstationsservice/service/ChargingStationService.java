@@ -3,6 +3,7 @@ package net.developer.space.chargingstationsservice.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.developer.space.chargingstationsservice.repository.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -14,18 +15,21 @@ import net.developer.space.chargingstationsservice.entity.ChargingStationEntity;
 import net.developer.space.chargingstationsservice.entity.Location;
 import net.developer.space.chargingstationsservice.entity.enums.Status;
 import net.developer.space.chargingstationsservice.exceptions.ChargingStationNotFoundException;
-import net.developer.space.chargingstationsservice.repository.ChargingStationRepository;
+import net.developer.space.chargingstationsservice.repository.IChargingStationRepository;
 
 @Service
 public class ChargingStationService implements IChargingStationService {
 
     @Autowired
-    ChargingStationRepository repository;
+    IChargingStationRepository chargingStationRepository;
+
+    @Autowired
+    ILocationRepository locationRepository;
 
     @Override
     @Cacheable(value = "all_charging_stations")
     public List<ChargingStationDto> findAll() {
-        return repository.findAll().stream()
+        return chargingStationRepository.findAll().stream()
                 .map(i -> ChargingStationDto.of(i))
                 .collect(Collectors.toList());
     }
@@ -33,12 +37,19 @@ public class ChargingStationService implements IChargingStationService {
     @Override
     public ChargingStationDto createChargingStation(ChargingStationDto cDto) {
         ChargingStationEntity entity = new ChargingStationEntity();
+        Location location = new Location();
 
+        location.setLongitude(cDto.getLocation().getLongitude());
+        location.setLatitude(cDto.getLocation().getLatitude());
+        location.setAddress(cDto.getLocation().getAddress());
+
+        this.locationRepository.save(location);
+
+        entity.setLocation(location);
         entity.setChargerType(cDto.getChargerType());
         entity.setStatus(Status.AVAILABLE);
-        entity.setLocation(cDto.getLocation());
         entity.setNumberOfChargingPoints(cDto.getNumberOfChargingPoints());
-        ChargingStationEntity newEntity = this.repository.save(entity);
+        ChargingStationEntity newEntity = this.chargingStationRepository.save(entity);
 
         return ChargingStationDto.builder()
                 .id(newEntity.getId())
@@ -64,11 +75,20 @@ public class ChargingStationService implements IChargingStationService {
         ChargingStationEntity entity = this.chargingStationRepository.findById(id)
                 .orElseThrow(() -> new ChargingStationNotFoundException(
                         String.format(ChargingStationNotFoundException.STATION_EXCEPTION_MESSAGE, id)));
-        entity.setLocation(cDto.getLocation());
+
+        Location location = new Location();
+
+        location.setLongitude(cDto.getLocation().getLongitude());
+        location.setLatitude(cDto.getLocation().getLatitude());
+        location.setAddress(cDto.getLocation().getAddress());
+
+        this.locationRepository.save(location);
+
+        entity.setLocation(location);
         entity.setStatus(cDto.getStatus());
         entity.setNumberOfChargingPoints(cDto.getNumberOfChargingPoints());
         entity.setChargerType(cDto.getChargerType());
-        return ChargingStationDto.of(this.repository.save(entity));
+        return ChargingStationDto.of(this.chargingStationRepository.save(entity));
     }
 
     @Override
@@ -77,16 +97,12 @@ public class ChargingStationService implements IChargingStationService {
         ChargingStationEntity entity = this.chargingStationRepository.findById(id)
                 .orElseThrow(() -> new ChargingStationNotFoundException(
                         String.format(ChargingStationNotFoundException.STATION_EXCEPTION_MESSAGE, id)));
-        this.repository.delete(entity);
+        this.chargingStationRepository.delete(entity);
     }
 
     @Override
     public ChargingStationDto findChargingStationByLocation(Location location) {
-        ChargingStationEntity entity = this.repository.findByLocation(location);
-        if (entity != null) {
-            return ChargingStationDto.of(entity);
-        }
-        throw new ChargingStationNotFoundException(ChargingStationNotFoundException.LOCATION_EXCEPTION_MESSAGE);
+        return ChargingStationDto.of(chargingStationRepository.findByLocation(location));
     }
 
     @Override
