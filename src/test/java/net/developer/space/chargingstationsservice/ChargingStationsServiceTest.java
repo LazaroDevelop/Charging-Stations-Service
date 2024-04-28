@@ -1,12 +1,16 @@
 package net.developer.space.chargingstationsservice;
 
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +38,7 @@ import net.developer.space.chargingstationsservice.service.ChargingStationServic
 
 @SpringBootTest
 @Import(CacheConfig.class)
-class ChargingStationsServiceApplicationTests {
+class ChargingStationsServiceTest {
 
 	@Mock
 	ChargingStationRepository repository;
@@ -43,7 +47,7 @@ class ChargingStationsServiceApplicationTests {
 	ChargingStationService service;
 
 	@Autowired
-	private CacheManager cacheManager;
+	CacheManager cacheManager;
 
 	@BeforeEach
 	public void setUp(){
@@ -257,5 +261,4 @@ class ChargingStationsServiceApplicationTests {
 
 		assertEquals(value, cachedValue);
 	}
-
 }
