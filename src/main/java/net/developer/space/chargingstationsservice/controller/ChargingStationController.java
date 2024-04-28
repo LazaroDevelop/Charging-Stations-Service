@@ -55,9 +55,6 @@ public class ChargingStationController {
         if(chargingStationDtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        if(chargingStationDtos == null){
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(chargingStationDtos);
     }
 
@@ -81,7 +78,7 @@ public class ChargingStationController {
             @ApiResponse(code = 200, message = "Successfully searched"),
             @ApiResponse(code = 404, message = "Requested Resource not found")
     })
-    public ResponseEntity<ChargingStationDto> findChargingStationById(@PathVariable("id") String id) {
+    public ResponseEntity<ChargingStationDto> findChargingStationById(@PathVariable("id")Long id) {
         ChargingStationDto dto = this.service.findChargingStationById(id);
         if (dto != null) {
             return ResponseEntity.ok(dto);
@@ -95,7 +92,7 @@ public class ChargingStationController {
             @ApiResponse(code = 200, message = "Successfully updated a existing Charging Station"),
             @ApiResponse(code = 404, message = "Requested Resource not found")
     })
-    public ResponseEntity<ChargingStationDto> updateChargingStation(@PathVariable String id,
+    public ResponseEntity<ChargingStationDto> updateChargingStation(@PathVariable Long id,
                                                                     @RequestBody ChargingStationDto dto) {
         ChargingStationDto newDto = this.service.updateChargingStation(id, dto);
         if (newDto != null) {
@@ -110,7 +107,7 @@ public class ChargingStationController {
             @ApiResponse(code = 200, message = "Successfully Charging Station eliminated"),
             @ApiResponse(code = 404, message = "Requested Resource not found")
     })
-    public ResponseEntity<String> deleteChargingStation(@PathVariable("id") String id) {
+    public ResponseEntity<String> deleteChargingStation(@PathVariable("id") Long id) {
         this.service.deleteChargingStation(id);
         return ResponseEntity.ok(String.format("Delete charging station with id: %s", id));
     }
@@ -134,7 +131,7 @@ public class ChargingStationController {
             @ApiResponse(code = 200, message = "Successfully status checked"),
             @ApiResponse(code = 404, message = "Requested Resource not found")
     })
-    public ResponseEntity<Status> checkChargingStationStatus(@PathVariable("id") String id) {
+    public ResponseEntity<Status> checkChargingStationStatus(@PathVariable("id") Long id) {
         if (this.service.checkChargingStationStatus(id) != null) {
             return new ResponseEntity<Status>(this.service.checkChargingStationStatus(id), HttpStatus.OK);
         }
