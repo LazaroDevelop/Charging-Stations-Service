@@ -44,7 +44,7 @@ To run the backend application I recommend using the Maven(CLI) to start the Spr
 * Execute the command ``` mvn clean install ``` to generate the resources, run tests and build the application.
 * Execute the command ``` mvn test ``` to run only the unitary tests.
 * Execute the command ``` mvn spring-boot:run ``` to set up the application and then you can consume the REST API in the default port 8080.
-* To see the documentation -> [Swagger API Documentation](http://your_host:your_port/swagger-ui/index.html)
+* To see the documentation -> http://your_host:your_port/swagger-ui/index.html
 
 ### Environments variables
 * For Mysql
