@@ -6,6 +6,8 @@ import net.developer.space.chargingstationsservice.entity.Location;
 import net.developer.space.chargingstationsservice.entity.enums.ChargerType;
 import net.developer.space.chargingstationsservice.entity.enums.Status;
 
+import java.io.Serializable;
+
 /**
  * @author Lazaro Noel Guerra Medina
  * @since 17/04/2024
@@ -19,7 +21,9 @@ import net.developer.space.chargingstationsservice.entity.enums.Status;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChargingStationDto {
+public class ChargingStationDto implements Serializable {
+
+    private static final long serialVersionUID = 864231567L;
     /**
      * Dto field of identifier
      */

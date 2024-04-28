@@ -23,6 +23,8 @@ import lombok.ToString;
 import net.developer.space.chargingstationsservice.entity.enums.ChargerType;
 import net.developer.space.chargingstationsservice.entity.enums.Status;
 
+import java.io.Serializable;
+
 /**
  * @author Lazaro Noel Guerra Medina
  * @since 17/04/2024
@@ -36,7 +38,9 @@ import net.developer.space.chargingstationsservice.entity.enums.Status;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "charging_station")
-public class ChargingStationEntity {
+public class ChargingStationEntity implements Serializable {
+
+    private static final long serialVersionUID = 2L;
     /**
      * Primary key and unique identifier of the "{@code charging_station}" table
      */

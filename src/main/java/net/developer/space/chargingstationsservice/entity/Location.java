@@ -9,12 +9,15 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.io.Serializable;
 
 /**
  * @author Lazaro Noel Guerra Medina
@@ -30,7 +33,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "location")
-public class Location {
+public class Location implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Primary key and unique identifier of the table "{@code location}"
      */
@@ -63,6 +69,7 @@ public class Location {
      */
     @Getter
     @Setter
+    @JsonIgnore
     @OneToOne(mappedBy = "location")
     private ChargingStationEntity chargingStationEntity;
 }
