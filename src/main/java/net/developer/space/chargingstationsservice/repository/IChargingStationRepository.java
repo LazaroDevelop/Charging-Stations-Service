@@ -17,7 +17,7 @@ import net.developer.space.chargingstationsservice.entity.Location;
  */
 
 @Repository
-public interface ChargingStationRepository extends JpaRepository<ChargingStationEntity, String> {
+public interface IChargingStationRepository extends JpaRepository<ChargingStationEntity, Long> {
     /**
      * Find all Charging Stations in the repository
      * @return a {@link List} of {@link ChargingStationEntity}
@@ -36,5 +36,5 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
      * @param id of the Charging Station
      * @return a {@link Optional} of {@link ChargingStationEntity}
      */
-    Optional<ChargingStationEntity> findById(String id);
+    Optional<ChargingStationEntity> findById(Long id);
 }

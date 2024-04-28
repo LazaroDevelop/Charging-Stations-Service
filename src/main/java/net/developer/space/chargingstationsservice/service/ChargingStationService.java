@@ -51,8 +51,8 @@ public class ChargingStationService implements IChargingStationService {
 
     @Override
     @Cacheable(value = "charging_stations", key = "#id")
-    public ChargingStationDto findChargingStationById(String id) {
-        ChargingStationEntity entity = this.repository.findById(id)
+    public ChargingStationDto findChargingStationById(Long id) {
+        ChargingStationEntity entity = this.chargingStationRepository.findById(id)
                 .orElseThrow(() -> new ChargingStationNotFoundException(
                         String.format(ChargingStationNotFoundException.STATION_EXCEPTION_MESSAGE, id)));
         return ChargingStationDto.of(entity);
@@ -60,8 +60,8 @@ public class ChargingStationService implements IChargingStationService {
 
     @Override
     @CachePut(value = "charging_station")
-    public ChargingStationDto updateChargingStation(String id, ChargingStationDto cDto) {
-        ChargingStationEntity entity = this.repository.findById(id)
+    public ChargingStationDto updateChargingStation(Long id, ChargingStationDto cDto) {
+        ChargingStationEntity entity = this.chargingStationRepository.findById(id)
                 .orElseThrow(() -> new ChargingStationNotFoundException(
                         String.format(ChargingStationNotFoundException.STATION_EXCEPTION_MESSAGE, id)));
         entity.setLocation(cDto.getLocation());
@@ -73,8 +73,8 @@ public class ChargingStationService implements IChargingStationService {
 
     @Override
     @CacheEvict(value = "charging_station", key = "#id")
-    public void deleteChargingStation(String id) {
-        ChargingStationEntity entity = this.repository.findById(id)
+    public void deleteChargingStation(Long id) {
+        ChargingStationEntity entity = this.chargingStationRepository.findById(id)
                 .orElseThrow(() -> new ChargingStationNotFoundException(
                         String.format(ChargingStationNotFoundException.STATION_EXCEPTION_MESSAGE, id)));
         this.repository.delete(entity);
@@ -91,8 +91,8 @@ public class ChargingStationService implements IChargingStationService {
 
     @Override
     @Cacheable(value = "charging_station_status")
-    public Status checkChargingStationStatus(String id) {
-        ChargingStationEntity entity = this.repository.findById(id)
+    public Status checkChargingStationStatus(Long id) {
+        ChargingStationEntity entity = this.chargingStationRepository.findById(id)
                 .orElseThrow(() -> new ChargingStationNotFoundException(
                         String.format(ChargingStationNotFoundException.STATION_EXCEPTION_MESSAGE, id)));
         return entity.getStatus();

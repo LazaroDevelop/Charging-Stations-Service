@@ -23,7 +23,7 @@ public class ChargingStationDto {
     /**
      * Dto field of identifier
      */
-    private String id;
+    private Long id;
     /**
      * Dto field of Status
      */

@@ -39,7 +39,7 @@ public class Location {
     @Getter
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
     /**
      * Current Address of the Charging Station
      */

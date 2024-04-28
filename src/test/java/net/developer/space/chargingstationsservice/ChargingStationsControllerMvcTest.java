@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,9 +39,9 @@ public class ChargingStationsControllerMvcTest {
     @Test
     void testFetchAllEndpoint() throws Exception {
         ChargingStationDto dto = new ChargingStationDto();
+        dto.setId(new Long(1));
         dto.setChargerType(ChargerType.AC);
         dto.setStatus(Status.AVAILABLE);
-        dto.setId("id1");
         dto.setLocation(new Location());
         dto.setNumberOfChargingPoints(8);
 
@@ -52,19 +53,19 @@ public class ChargingStationsControllerMvcTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(dto.getId())));
+                .andExpect(jsonPath("$[0].id", is((dto.getId().intValue()))));
     }
 
     @Test
     void testFindChargingStationById() throws Exception {
         ChargingStationDto dto = new ChargingStationDto();
-        dto.setId("id");
+        dto.setId(1L);
         dto.setChargerType(ChargerType.AC);
         dto.setStatus(Status.AVAILABLE);
         dto.setLocation(new Location());
         dto.setNumberOfChargingPoints(8);
 
-        given(this.service.findChargingStationById(anyString())).willReturn(dto);
+        given(this.service.findChargingStationById(anyLong())).willReturn(dto);
 
         mvc.perform(get("/v1/api/charging-stations/find-by-id/{id}", dto.getId())
                         .contentType(MediaType.APPLICATION_JSON))

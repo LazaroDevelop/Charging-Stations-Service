@@ -45,7 +45,7 @@ public class ChargingStationEntity {
     @Setter
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
 
     /**
      * Location of the Charging Station that allows make geolocation

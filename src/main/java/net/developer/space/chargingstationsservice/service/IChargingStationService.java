@@ -31,7 +31,7 @@ public interface IChargingStationService {
      * @return An object of type ChargingStationDto with the information of the charging station
      * identified by the given id.
      */
-    ChargingStationDto findChargingStationById(String id);
+    ChargingStationDto findChargingStationById(Long id);
     /**
      * The function `updateChargingStation` updates a charging station with the provided ID using the
      * information in the `ChargingStationDto` object.
@@ -44,7 +44,7 @@ public interface IChargingStationService {
      * station identified by the `id` parameter
      * @return The method `updateChargingStation` is returning a `ChargingStationDto` object.
      */
-    ChargingStationDto updateChargingStation(String id, ChargingStationDto cDto);
+    ChargingStationDto updateChargingStation(Long id, ChargingStationDto cDto);
     /**
      * The function `deleteChargingStation` in Java is used to remove a charging station based on its
      * ID.
@@ -52,7 +52,7 @@ public interface IChargingStationService {
      * @param id The `deleteChargingStation` function takes a parameter `id`, which is a string
      * representing the unique identifier of the charging station that needs to be deleted.
      */
-    void deleteChargingStation(String id);
+    void deleteChargingStation(Long id);
     /**
      * This function finds a charging station based on a given location.
      * 
@@ -74,5 +74,5 @@ public interface IChargingStationService {
      * charging station with the specified ID. The return value could be information such as whether
      * the station is currently in use, available, offline, or any other relevant status.
      */
-    Status checkChargingStationStatus(String id);
+    Status checkChargingStationStatus(Long id);
 }
