@@ -20,7 +20,6 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(ChargingStationController.class)
-public class ChargingStationsControllerMvcTest {
+class ChargingStationsControllerMvcTest {
 
     @Autowired
     MockMvc mvc;
@@ -39,10 +38,12 @@ public class ChargingStationsControllerMvcTest {
     @Test
     void testFetchAllEndpoint() throws Exception {
         ChargingStationDto dto = new ChargingStationDto();
-        dto.setId(new Long(1));
+        dto.setId(1L);
         dto.setChargerType(ChargerType.AC);
         dto.setStatus(Status.AVAILABLE);
-        dto.setLocation(new Location());
+        dto.setAddress("3rd Avenue");
+        dto.setLongitude(23.4321);
+        dto.setLatitude(32.2134);
         dto.setNumberOfChargingPoints(8);
 
         List<ChargingStationDto> dtos = Arrays.asList(dto);
@@ -62,7 +63,9 @@ public class ChargingStationsControllerMvcTest {
         dto.setId(1L);
         dto.setChargerType(ChargerType.AC);
         dto.setStatus(Status.AVAILABLE);
-        dto.setLocation(new Location());
+        dto.setAddress("1st Avenue");
+        dto.setLatitude(23.4232);
+        dto.setLongitude(32.1234);
         dto.setNumberOfChargingPoints(8);
 
         given(this.service.findChargingStationById(anyLong())).willReturn(dto);

@@ -1,7 +1,7 @@
 package net.developer.space.chargingstationsservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.List;
 
@@ -33,15 +31,19 @@ import java.util.List;
  * @implNote Charging Station Controller to manage all operations via http request
  * @apiNote API version 1.0 - Swagger Doc v2
  */
-
+@Slf4j
 @CrossOrigin
 @RestController
 @RequestMapping("/v1/api/charging-stations")
 @Api(value = "Charging Station controller to manage all operations")
 public class ChargingStationController {
 
+    IChargingStationService service;
+
     @Autowired
-    private IChargingStationService service;
+    ChargingStationController(IChargingStationService service){
+        this.service = service;
+    }
 
     @GetMapping("/all")
     @ApiOperation(value = "Create and Save a new Charging Station item provided", response = ChargingStationDto.class)
@@ -119,6 +121,7 @@ public class ChargingStationController {
             @ApiResponse(code = 404, message = "Requested Resource not found")
     })
     public ResponseEntity<ChargingStationDto> findChargingStationByLocation(@RequestBody Location location) {
+        log.info("location provided - {}", location);
         ChargingStationDto dto = this.service.findChargingStationByLocation(location);
         if (dto != null)
             return ResponseEntity.ok(dto);
@@ -132,9 +135,10 @@ public class ChargingStationController {
             @ApiResponse(code = 404, message = "Requested Resource not found")
     })
     public ResponseEntity<Status> checkChargingStationStatus(@PathVariable("id") Long id) {
-        if (this.service.checkChargingStationStatus(id) != null) {
-            return new ResponseEntity<Status>(this.service.checkChargingStationStatus(id), HttpStatus.OK);
+        ChargingStationDto dto = service.findChargingStationById(id);
+        if (dto != null) {
+            return ResponseEntity.ok(dto.getStatus());
         }
-        return new ResponseEntity<>(this.service.checkChargingStationStatus(id), HttpStatus.NOT_FOUND);
+        return ResponseEntity.notFound().build();
     }
 }
