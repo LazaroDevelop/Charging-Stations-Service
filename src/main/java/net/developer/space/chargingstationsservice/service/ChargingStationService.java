@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import net.developer.space.chargingstationsservice.dto.ChargingStationDto;
 import net.developer.space.chargingstationsservice.entity.ChargingStationEntity;
 import net.developer.space.chargingstationsservice.entity.Location;
-import net.developer.space.chargingstationsservice.entity.enums.Status;
 import net.developer.space.chargingstationsservice.exceptions.ChargingStationNotFoundException;
 import net.developer.space.chargingstationsservice.repository.IChargingStationRepository;
 
@@ -35,17 +34,15 @@ public class ChargingStationService implements IChargingStationService {
 
     @Override
     public ChargingStationDto createChargingStation(ChargingStationDto cDto) {
-        Location location = new Location();
-        location.setLongitude(cDto.getLongitude());
-        location.setLatitude(cDto.getLatitude());
-        location.setAddress(cDto.getAddress());
+        Location location = new Location(cDto.getAddress(), cDto.getLatitude(), cDto.getLongitude());
 
-        ChargingStationEntity entity = new ChargingStationEntity();
+        ChargingStationEntity entity = new ChargingStationEntity(
+                location,
+                cDto.getChargerType(),
+                cDto.getNumberOfChargingPoints(),
+                cDto.getStatus()
+        );
 
-        entity.setLocation(location);
-        entity.setChargerType(cDto.getChargerType());
-        entity.setStatus(Status.AVAILABLE);
-        entity.setNumberOfChargingPoints(cDto.getNumberOfChargingPoints());
         return ChargingStationDto.of(this.chargingStationRepository.save(entity));
     }
 
@@ -65,15 +62,14 @@ public class ChargingStationService implements IChargingStationService {
                 .orElseThrow(() -> new ChargingStationNotFoundException(
                         String.format(ChargingStationNotFoundException.STATION_EXCEPTION_MESSAGE, id)));
 
-        Location location = new Location();
-        location.setLongitude(cDto.getLongitude());
-        location.setLatitude(cDto.getLatitude());
-        location.setAddress(cDto.getAddress());
+        Location location = new Location(cDto.getAddress(), cDto.getLatitude(), cDto.getLongitude());
+
 
         entity.setLocation(location);
         entity.setStatus(cDto.getStatus());
         entity.setNumberOfChargingPoints(cDto.getNumberOfChargingPoints());
         entity.setChargerType(cDto.getChargerType());
+
         return ChargingStationDto.of(this.chargingStationRepository.save(entity));
     }
 
