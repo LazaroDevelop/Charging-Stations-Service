@@ -73,4 +73,10 @@ public class ChargingStationEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    public ChargingStationEntity(Location location, ChargerType chargerType, int numberOfChargingPoints, Status status){
+        this.location = location;
+        this.chargerType = chargerType;
+        this.numberOfChargingPoints = numberOfChargingPoints;
+        this.status = status;
+    }
 }
