@@ -8,36 +8,29 @@ The following was discovered as part of building this project:
 
 # Getting Started
 
-Charging Stations Service
+# Charging Stations Service
 
-### My Recommendations
-
-- Use Java 8
-- Use Maven to run Spring Boot applications
-- Remember: Spring Boot 2+ works with Java 8+
+A Spring Boot microservice for managing charging stations.  
+This project demonstrates RESTful APIs with persistence, caching, and containerization support.
 
 ### Reference Documentation
 
-Tecnologies
-* Spring
-* Docker
-* Redis
-* Mysql
-* Mockito
-* JSON
-* Swagger Doc
+---
 
-## Dependencies
+## 🚀 Tech Stack
 
-* Spring Boot - 2.7.14
-* Spring Data Jpa 
-* Mysql
-* Lombok
-* JUnit4
-* Redis Cache server
-* Swagger
+- **Java**: 8  
+- **Spring Boot**: 2.7.14  
+- **Persistence**: Spring Data JPA, MySQL  
+- **Caching**: Redis  
+- **Testing**: JUnit 4, Mockito  
+- **Documentation**: Swagger / OpenAPI  
+- **Containerization**: Docker  
+- **Build Tool**: Maven  
+
+---
   
-### Running backend app
+## ⚙️ Setup & Installation
 
 To run the backend application I recommend using the Maven(CLI) to start the Spring Tomcat server:
 * Execute the command ``` mvn dependency:resolve ``` to search application dependencies.
@@ -45,24 +38,36 @@ To run the backend application I recommend using the Maven(CLI) to start the Spr
 * Execute the command ``` mvn test ``` to run only the unitary tests.
 * Execute the command ``` mvn spring-boot:run ``` to set up the application and then you can consume the REST API in the default port 8080.
 * To see the documentation -> http://your_host:your_port/swagger-ui/index.html
-* To pull a docker image of this service you can access to [Docker Hub Repository](https://hub.docker.com/r/dokcerlngm/lazaro-developer) and make  ``` docker pull dokcerlngm/lazaro-developer  ```
 
-### Environments variables
-* For Mysql
-  - MYSQL_HOST:localhost
-  - MYSQL_PORT:3366
-  - MYSQL_DB:charge_station_db
-  - MYSQL_USER:root
-  - MYSQL_PASSWORD:1234
-* For Redis Cache Server
-  - REDIS_SERVER_HOST:localhost
-  - REDIS_SERVER_PORT:6379
-* For expose a specific port in the service
-  - SERVICE_PORT:8081
+---
+
+## 🐳 Docker Image
+
+You can also run the service using Docker:
+```docker pull dokcerlngm/lazaro-developer```
+
+---
+
+### 🔑 Environment Variables
+
+| Service | Variable            | Default Value       |
+| ------- | ------------------- | ------------------- |
+| MySQL   | `MYSQL_HOST`        | localhost           |
+|         | `MYSQL_PORT`        | 3366                |
+|         | `MYSQL_DB`          | charge\_station\_db |
+|         | `MYSQL_USER`        | root                |
+|         | `MYSQL_PASSWORD`    | 1234                |
+| Redis   | `REDIS_SERVER_HOST` | localhost           |
+|         | `REDIS_SERVER_PORT` | 6379                |
+| Service | `SERVICE_PORT`      | 8081                |
+
+---
 
 ### Guides
 
-The following guides illustrate how to use some features concretely:
+---
+
+## 📚 Useful References
 
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 * [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
