@@ -1,76 +1,120 @@
-# Read Me First
+# ⚡ Charging Stations Service
 
-The following was discovered as part of building this project:
+A **Spring Boot REST API** for managing **electric vehicle charging stations**: register stations, look them up by location, and check whether a charger is **available** or **in use**. Station data is stored in **MySQL** and frequently read data is cached in **Redis**.
 
-* The JVM level was changed from '1.8' to '17', review
-  the [JDK Version Range](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-Versions#jdk-version-range)
-  on the wiki for more details.
+## 📚 Table of contents
+- [What it does](#-what-it-does)
+- [Tech stack](#-tech-stack)
+- [Run it](#-run-it)
+- [API tour](#-api-tour)
+- [Configuration](#%EF%B8%8F-configuration)
+- [Testing](#-testing)
+- [Roadmap](#%EF%B8%8F-roadmap)
+- [Author](#-author)
 
-# Getting Started
+## ✨ What it does
+- 🔌 Full **CRUD** for charging stations
+- 📍 Find a station by its **location** (address, latitude, longitude)
+- 🚦 Check the **status** of a station: `AVAILABLE` or `IN_USE`
+- ⚡ Supports two **charger types**: `AC` and `DC_FAST_CHARGE`
+- 🧠 **Redis caching** to avoid hitting the database on repeated reads
+- 📄 **Swagger UI** documentation generated with Springfox
 
-# Charging Stations Service
+## 🛠️ Tech stack
+| Layer | Technology |
+|-------|------------|
+| Language | Java 8 |
+| Framework | Spring Boot 2.7 (Web, Data JPA, Cache) |
+| Database | MySQL |
+| Cache | Redis |
+| Docs | Springfox (Swagger) |
+| Testing | JUnit 5, Mockito, MockMvc |
+| Container | Docker |
 
-A Spring Boot microservice for managing charging stations.  
-This project demonstrates RESTful APIs with persistence, caching, and containerization support.
+## 🚀 Run it
 
-### Reference Documentation
+### Prerequisites
+- Java 8+ and Maven
+- A running **MySQL** and **Redis** instance (local or Docker)
 
----
+### Start MySQL and Redis with Docker
+~~~bash
+docker run -d --name charging-mysql -p 3366:3306 \
+  -e MYSQL_ROOT_PASSWORD=change-me -e MYSQL_DATABASE=charge_station_db mysql:8
 
-## 🚀 Tech Stack
+docker run -d --name charging-redis -p 6379:6379 redis:7
+~~~
 
-- **Java**: 8  
-- **Spring Boot**: 2.7.14  
-- **Persistence**: Spring Data JPA, MySQL  
-- **Caching**: Redis  
-- **Testing**: JUnit 4, Mockito  
-- **Documentation**: Swagger / OpenAPI  
-- **Containerization**: Docker  
-- **Build Tool**: Maven  
+### Run the service
+~~~bash
+git clone https://github.com/LazaroDevelop/Charging-Stations-Service.git
+cd Charging-Stations-Service
+mvn spring-boot:run
+~~~
 
----
-  
-## ⚙️ Setup & Installation
+The API starts on **http://localhost:8081**.
+Swagger UI: **http://localhost:8081/swagger-ui/index.html**
 
-To run the backend application I recommend using the Maven(CLI) to start the Spring Tomcat server:
-* Execute the command ``` mvn dependency:resolve ``` to search application dependencies.
-* Execute the command ``` mvn clean install ``` to generate the resources, run tests and build the application.
-* Execute the command ``` mvn test ``` to run only the unitary tests.
-* Execute the command ``` mvn spring-boot:run ``` to set up the application and then you can consume the REST API in the default port 8080.
-* To see the documentation -> http://your_host:your_port/swagger-ui/index.html
+### Run with Docker
+~~~bash
+mvn clean package -DskipTests
+docker build -t charging-stations-service .
+docker run -p 8081:8081 charging-stations-service
+~~~
 
----
+## 📡 API tour
+Base path: `/v1/api/charging-stations`
 
-## 🐳 Docker Image
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/all` | List all charging stations |
+| `POST` | `/create` | Create a new charging station |
+| `GET` | `/find-by-id/{id}` | Get a station by ID |
+| `PUT` | `/update/{id}` | Update a station |
+| `DELETE` | `/delete/{id}` | Delete a station |
+| `POST` | `/find-by-location` | Find a station by location (request body) |
+| `GET` | `/check-status/{id}` | Get the current status of a station |
 
-You can also run the service using Docker:
-```docker pull dokcerlngm/lazaro-developer```
+### Example: create a station
+~~~bash
+curl -X POST http://localhost:8081/v1/api/charging-stations/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "address": "Av. 18 de Julio 1234, Montevideo",
+    "latitude": -34.9055,
+    "longitude": -56.1913,
+    "chargerType": "DC_FAST_CHARGE",
+    "numberOfChargingPoints": 4,
+    "status": "AVAILABLE"
+  }'
+~~~
 
----
+## ⚙️ Configuration
+All settings live in `src/main/resources/application.properties` and can be overridden with environment variables:
 
-### 🔑 Environment Variables
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SERVICE_PORT` | `8081` | HTTP port |
+| `MYSQL_HOST` | `localhost` | MySQL host |
+| `MYSQL_PORT` | `3366` | MySQL port |
+| `MYSQL_DB` | `charge_station_db` | Database name |
+| `REDIS_SERVER_HOST` | `localhost` | Redis host |
+| `REDIS_SERVER_PORT` | `6379` | Redis port |
 
-| Service | Variable            | Default Value       |
-| ------- | ------------------- | ------------------- |
-| MySQL   | `MYSQL_HOST`        | localhost           |
-|         | `MYSQL_PORT`        | 3366                |
-|         | `MYSQL_DB`          | charge\_station\_db |
-|         | `MYSQL_USER`        | root                |
-|         | `MYSQL_PASSWORD`    | 1234                |
-| Redis   | `REDIS_SERVER_HOST` | localhost           |
-|         | `REDIS_SERVER_PORT` | 6379                |
-| Service | `SERVICE_PORT`      | 8081                |
+## ✅ Testing
+The project includes a **MockMvc** test for the controller and a **Mockito** unit test for the service layer.
+~~~bash
+mvn test
+~~~
 
----
+## 🗺️ Roadmap
+- [ ] Upgrade to Java 21 and Spring Boot 3
+- [ ] Replace Springfox with springdoc-openapi
+- [ ] Add a `docker-compose.yml` with MySQL and Redis
+- [ ] Add a GitHub Actions build
 
-### Guides
+## 👤 Author
 
----
+**Lazaro Noel Guerra Medina**, Java Backend Engineer
 
-## 📚 Useful References
-
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Dockerizing a Spring Boot Application](https://www.baeldung.com/dockerizing-spring-boot-application)
+> *"Make it work, make it right, make it fast."* ☕
